@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using SlayTheTower.Data;
@@ -26,6 +27,17 @@ namespace SlayTheTower.UI
         [Tooltip("Số lá đang sở hữu (vd 'x3').")]
         [SerializeField] private Text ownedText;
 
+        [Header("Hoạt ảnh artwork (kéo các sprite vào để chạy)")]
+        [Tooltip("Danh sách sprite cho hoạt ảnh artwork. Để TRỐNG = dùng artwork tĩnh của definition.")]
+        [SerializeField] private List<Sprite> artFrames = new();
+        [Tooltip("Thời gian mỗi frame (giây).")]
+        [Min(0.01f)] [SerializeField] private float artFrameDuration = 0.15f;
+        [Tooltip("Lặp lại hoạt ảnh.")]
+        [SerializeField] private bool loopArt = true;
+
+        private int _artIndex;
+        private float _artTimer;
+
         public CardDefinition Definition => definition;
         public string DisplayName => definition != null ? definition.displayName : name;
 
@@ -37,8 +49,48 @@ namespace SlayTheTower.UI
 
         private void Awake() => Refresh();
 
-        private void OnEnable() => CardInventory.OnChanged += RefreshOwned;
+        private void OnEnable()
+        {
+            CardInventory.OnChanged += RefreshOwned;
+            _artIndex = 0;
+            _artTimer = 0f;
+            ApplyArtFrame();
+        }
+
         private void OnDisable() => CardInventory.OnChanged -= RefreshOwned;
+
+        private void Update()
+        {
+            if (artworkImage == null || artFrames == null || artFrames.Count == 0 || artFrameDuration <= 0f)
+                return;
+            if (!loopArt && _artIndex >= artFrames.Count - 1) return; // hết & không lặp -> dừng
+
+            _artTimer += Time.deltaTime;
+            if (_artTimer < artFrameDuration) return;
+            _artTimer -= artFrameDuration;
+
+            _artIndex++;
+            if (_artIndex >= artFrames.Count) _artIndex = loopArt ? 0 : artFrames.Count - 1;
+            ApplyArtFrame();
+        }
+
+        private void ApplyArtFrame()
+        {
+            if (artworkImage == null || artFrames == null || artFrames.Count == 0) return;
+            int idx = Mathf.Clamp(_artIndex, 0, artFrames.Count - 1);
+            if (artFrames[idx] != null) artworkImage.sprite = artFrames[idx];
+        }
+
+        /// <summary>Gán list frame artwork bằng code (vd thẻ người chơi animated).</summary>
+        public void SetArtFrames(List<Sprite> frames, float frameDuration = -1f, bool loop = true)
+        {
+            artFrames = frames ?? new List<Sprite>();
+            if (frameDuration > 0f) artFrameDuration = frameDuration;
+            loopArt = loop;
+            _artIndex = 0;
+            _artTimer = 0f;
+            ApplyArtFrame();
+        }
 
 #if UNITY_EDITOR
         private void OnValidate()
@@ -79,7 +131,13 @@ namespace SlayTheTower.UI
             if (nameText != null) nameText.text = definition.displayName;
             if (costText != null) costText.text = definition.energyCost.ToString();
             if (descriptionText != null) descriptionText.text = definition.description;
-            if (artworkImage != null && definition.artwork != null) artworkImage.sprite = definition.artwork;
+            if (artworkImage != null)
+            {
+                if (artFrames != null && artFrames.Count > 0 && artFrames[0] != null)
+                    artworkImage.sprite = artFrames[0];       // có frame -> dùng frame đầu
+                else if (definition.artwork != null)
+                    artworkImage.sprite = definition.artwork; // không -> artwork tĩnh
+            }
             if (priceText != null) priceText.text = definition.shopPrice.ToString();
             RefreshOwned();
         }

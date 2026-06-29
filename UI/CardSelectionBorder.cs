@@ -58,6 +58,13 @@ namespace SlayTheTower.UI
             if (_mat == null) return;
             _mat.SetFloat("_UseRainbow", useRainbow ? 1f : 0f);
             _mat.SetColor("_Color", borderColor);
+
+            // Set tỉ lệ W/H để góc bo tròn đều (không méo trên lá hình chữ nhật).
+            if (borderImage != null)
+            {
+                var r = borderImage.rectTransform.rect;
+                if (r.height > 0.0001f) _mat.SetFloat("_Aspect", r.width / r.height);
+            }
         }
 
 #if UNITY_EDITOR
