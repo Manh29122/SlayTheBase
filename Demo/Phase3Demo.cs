@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem.UI;
 using SlayTheTower.Data;
@@ -24,8 +25,8 @@ namespace SlayTheTower
         private GameObject _cardTemplate;
 
         private Image _energyFill;
-        private Text _energyText;
-        private Text _debugText;
+        private TMP_Text _energyText;
+        private TMP_Text _debugText;
 
         private void Awake()
         {
@@ -228,50 +229,47 @@ namespace SlayTheTower
             return go;
         }
 
-        private static Text AddCenterLabel(Transform parent, string text, int fontSize, Color color)
+        private static TMP_Text AddCenterLabel(Transform parent, string text, int fontSize, Color color)
         {
-            var go = new GameObject("Label", typeof(Text));
+            var go = new GameObject("Label", typeof(TextMeshProUGUI));
             go.transform.SetParent(parent, false);
             var rt = (RectTransform)go.transform;
             rt.anchorMin = Vector2.zero; rt.anchorMax = Vector2.one;
             rt.offsetMin = Vector2.zero; rt.offsetMax = Vector2.zero;
-            var txt = go.GetComponent<Text>();
-            txt.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
-            txt.text = text; txt.alignment = TextAnchor.MiddleCenter;
+            var txt = go.GetComponent<TextMeshProUGUI>();
+            txt.text = text; txt.alignment = TextAlignmentOptions.Center;
             txt.fontSize = fontSize; txt.color = color; txt.raycastTarget = false;
             return txt;
         }
 
-        private static Text AddCornerLabel(Transform parent, string text,
+        private static TMP_Text AddCornerLabel(Transform parent, string text,
             Vector2 anchor, Vector2 offset, int fontSize)
         {
-            var go = new GameObject("Corner", typeof(Text));
+            var go = new GameObject("Corner", typeof(TextMeshProUGUI));
             go.transform.SetParent(parent, false);
             var rt = (RectTransform)go.transform;
             rt.anchorMin = rt.anchorMax = anchor;
             rt.pivot = anchor;
             rt.anchoredPosition = offset;
             rt.sizeDelta = new Vector2(600f, 50f);
-            var txt = go.GetComponent<Text>();
-            txt.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+            var txt = go.GetComponent<TextMeshProUGUI>();
             txt.text = text;
-            txt.alignment = anchor.x < 0.5f ? TextAnchor.UpperLeft : TextAnchor.UpperRight;
+            txt.alignment = anchor.x < 0.5f ? TextAlignmentOptions.TopLeft : TextAlignmentOptions.TopRight;
             txt.fontSize = fontSize; txt.color = Color.white; txt.raycastTarget = false;
             return txt;
         }
 
         private static void AddTopLabel(Transform parent, string text)
         {
-            var go = new GameObject("TopLabel", typeof(Text));
+            var go = new GameObject("TopLabel", typeof(TextMeshProUGUI));
             go.transform.SetParent(parent, false);
             var rt = (RectTransform)go.transform;
             rt.anchorMin = new Vector2(0f, 1f); rt.anchorMax = new Vector2(1f, 1f);
             rt.pivot = new Vector2(0.5f, 1f);
             rt.anchoredPosition = new Vector2(0f, -70f);
             rt.sizeDelta = new Vector2(0f, 50f);
-            var txt = go.GetComponent<Text>();
-            txt.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
-            txt.text = text; txt.alignment = TextAnchor.MiddleCenter;
+            var txt = go.GetComponent<TextMeshProUGUI>();
+            txt.text = text; txt.alignment = TextAlignmentOptions.Center;
             txt.fontSize = 26; txt.color = new Color(1f, 1f, 1f, 0.8f); txt.raycastTarget = false;
         }
     }

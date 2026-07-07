@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem.UI;
 using SlayTheTower.Data;
@@ -21,8 +22,8 @@ namespace SlayTheTower
         private CardView _preview;
         private CardDefinition _previewDef;
         private Image _previewBg;
-        private Text _previewNameText;
-        private Text _previewDescText;
+        private TMP_Text _previewNameText;
+        private TMP_Text _previewDescText;
 
         private readonly List<(string id, Sprite sprite)> _backgrounds = new();
         private int _bgIndex;
@@ -282,9 +283,9 @@ namespace SlayTheTower
             var bg = ChildImage(root.transform, "Background", Vector2.zero, Vector2.one);
             var art = ChildImage(root.transform, "ArtWork", new Vector2(0.13f, 0.46f), new Vector2(0.87f, 0.82f));
             art.color = Color.white;
-            var nameT = ChildText(root.transform, "NameText", new Vector2(0.08f, 0.37f), new Vector2(0.92f, 0.45f), 22, TextAnchor.MiddleCenter);
-            var descT = ChildText(root.transform, "DescriptionText", new Vector2(0.08f, 0.08f), new Vector2(0.92f, 0.35f), 18, TextAnchor.UpperCenter);
-            var costT = ChildText(root.transform, "CostText", new Vector2(0.74f, 0.86f), new Vector2(0.95f, 0.98f), 28, TextAnchor.MiddleCenter);
+            var nameT = ChildText(root.transform, "NameText", new Vector2(0.08f, 0.37f), new Vector2(0.92f, 0.45f), 22, TextAlignmentOptions.Center);
+            var descT = ChildText(root.transform, "DescriptionText", new Vector2(0.08f, 0.08f), new Vector2(0.92f, 0.35f), 18, TextAlignmentOptions.Top);
+            var costT = ChildText(root.transform, "CostText", new Vector2(0.74f, 0.86f), new Vector2(0.95f, 0.98f), 28, TextAlignmentOptions.Center);
 
             var cv = root.GetComponent<CardView>();
             cv.BindUI(bg, art, nameT, costT, descT);
@@ -302,15 +303,14 @@ namespace SlayTheTower
             return img;
         }
 
-        private static Text ChildText(Transform parent, string n, Vector2 aMin, Vector2 aMax, int fontSize, TextAnchor align)
+        private static TMP_Text ChildText(Transform parent, string n, Vector2 aMin, Vector2 aMax, int fontSize, TextAlignmentOptions align)
         {
-            var go = new GameObject(n, typeof(Text));
+            var go = new GameObject(n, typeof(TextMeshProUGUI));
             go.transform.SetParent(parent, false);
             var rt = (RectTransform)go.transform;
             rt.anchorMin = aMin; rt.anchorMax = aMax; rt.offsetMin = Vector2.zero; rt.offsetMax = Vector2.zero;
-            var t = go.GetComponent<Text>();
-            t.font = UIFont(); t.fontSize = fontSize; t.alignment = align; t.color = Color.white;
-            t.raycastTarget = false; t.horizontalOverflow = HorizontalWrapMode.Wrap; t.verticalOverflow = VerticalWrapMode.Truncate;
+            var t = go.GetComponent<TextMeshProUGUI>();
+            t.fontSize = fontSize; t.alignment = align; t.color = Color.white; t.raycastTarget = false;
             return t;
         }
 

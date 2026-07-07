@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 using SlayTheTower.Data;
 
 namespace SlayTheTower.UI
@@ -19,13 +20,13 @@ namespace SlayTheTower.UI
         [Header("Tham chiếu UI (tùy chọn — để trống nếu trang trí hoàn toàn thủ công)")]
         [SerializeField] private Image backgroundImage;
         [SerializeField] private Image artworkImage;
-        [SerializeField] private Text nameText;
-        [SerializeField] private Text costText;
-        [SerializeField] private Text descriptionText;
+        [SerializeField] private TMP_Text nameText;
+        [SerializeField] private TMP_Text costText;
+        [SerializeField] private TMP_Text descriptionText;
         [Tooltip("Giá mua/bán (vàng) trong shop.")]
-        [SerializeField] private Text priceText;
+        [SerializeField] private TMP_Text priceText;
         [Tooltip("Số lá đang sở hữu (vd 'x3').")]
-        [SerializeField] private Text ownedText;
+        [SerializeField] private TMP_Text ownedText;
 
         [Header("Hoạt ảnh artwork (kéo các sprite vào để chạy)")]
         [Tooltip("Danh sách sprite cho hoạt ảnh artwork. Để TRỐNG = dùng artwork tĩnh của definition.")]
@@ -107,7 +108,7 @@ namespace SlayTheTower.UI
         }
 
         /// <summary>Gán nhanh các tham chiếu UI bằng code (dùng khi dựng prefab runtime/demo).</summary>
-        public void BindUI(Image background, Image artwork, Text nameLabel, Text costLabel, Text descLabel)
+        public void BindUI(Image background, Image artwork, TMP_Text nameLabel, TMP_Text costLabel, TMP_Text descLabel)
         {
             backgroundImage = background;
             artworkImage = artwork;
